@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import useEcomStore from "../../store/ecom-store";
 import { createProduct } from "../../api/product";
 import { toast } from "react-toastify";
+import Uploadfile from "./Uploadfile";
 
 const initialState = {
-  title: "",
-  description: "",
-  price: 0,
-  quantity: 0,
+  title: "Food Dog",
+  description: "desc",
+  price: "200",
+  quantity: "15",
   categoryId: "",
   images: [],
 };
@@ -19,18 +20,21 @@ const FormProduct = () => {
   const getProduct = useEcomStore((state) => state.getProduct);
   const products = useEcomStore((state) => state.products);
   const [form, setForm] = useState(initialState);
+  
 
   useEffect(() => {
     if (token) {
       getCategory(token);
-      getProduct(token, 20);
+      getProduct(token, 100);
     }
   }, [token]);
 
   const handleonChange = (e) => {
+    const { name, value, type } = e.target;
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [name]: type === "number" ? Number(value) : value,
     });
   };
 
@@ -48,23 +52,27 @@ const FormProduct = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl">
+    <div className="container mx-auto p-4 bg-white shadow-md">
       <form onSubmit={handleSubmit}>
         <h1 className="text-xl font-bold mb-4">เพิ่มข้อมูลสินค้า</h1>
 
         <input
+          type="text"
           className="border p-2 w-full mb-2"
           value={form.title}
           onChange={handleonChange}
           placeholder="ชื่อสินค้า"
           name="title"
+          required
         />
         <input
+          type="text"
           className="border p-2 w-full mb-2"
           value={form.description}
           onChange={handleonChange}
           placeholder="รายละเอียดสินค้า"
           name="description"
+          required
         />
         <input
           type="number"
@@ -73,6 +81,8 @@ const FormProduct = () => {
           onChange={handleonChange}
           placeholder="ราคา"
           name="price"
+          min={0}
+          required
         />
         <input
           type="number"
@@ -81,6 +91,8 @@ const FormProduct = () => {
           onChange={handleonChange}
           placeholder="จำนวนในคลัง"
           name="quantity"
+          min={0}
+          required
         />
         <select
           className="border p-2 w-full mb-4"
@@ -98,7 +110,9 @@ const FormProduct = () => {
             </option>
           ))}
         </select>
-
+        <hr />
+{/*upload file */}
+<Uploadfile form={form} setForm={setForm} />
         <button
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -106,35 +120,39 @@ const FormProduct = () => {
           เพิ่มสินค้า
         </button>
 
-        <hr className="my-6" />
+        <hr />
+        <br />
 
-        <h2 className="text-lg font-semibold mb-2">รายการสินค้า</h2>
         <table className="table-auto w-full border">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-2 py-1">No.</th>
-              <th className="border px-2 py-1">ชื่อ</th>
-              <th className="border px-2 py-1">รายละเอียด</th>
-              <th className="border px-2 py-1">ราคา</th>
-              <th className="border px-2 py-1">จำนวน</th>
-              <th className="border px-2 py-1">ขายแล้ว</th>
-              <th className="border px-2 py-1">วันที่อัปเดต</th>
+            <tr className="bg-gray-200 border">
+              <th scope="col">No.</th>
+              <th scope="col">ชื่อ</th>
+              <th scope="col">รายละเอียด</th>
+              <th scope="col">ราคา</th>
+              <th scope="col">จำนวน</th>
+              <th scope="col">ขายแล้ว</th>
+              <th scope="col">วันที่อัปเดต</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((item, index) => (
-              <tr key={item.id || index}>
-                <td className="border px-2 py-1">{index + 1}</td>
-                <td className="border px-2 py-1">{item.title}</td>
-                <td className="border px-2 py-1">{item.description}</td>
-                <td className="border px-2 py-1">{item.price}</td>
-                <td className="border px-2 py-1">{item.quantity}</td>
-                <td className="border px-2 py-1">{item.sold}</td>
-                <td className="border px-2 py-1">
-                  {new Date(item.updatedAt).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
+            {products.map((item, index) => {
+              return (
+                <tr key={item.id || index}>
+                  <th scope="row">{index + 1}</th>
+                  <td>{item.title}</td>
+                  <td>{item.description}</td>
+                  <td>{item.price}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.sold}</td>
+                  <td>{new Date(item.updatedAt).toLocaleDateString()}</td>
+                  <td>
+                    <p>แกไข้</p>
+                    <p>ลบ</p>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </form>

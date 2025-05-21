@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   createCategory,
-  listCategory,
   removeCategory,
 } from "../../api/category";
 import useEcomStore from "../../store/ecom-store";
@@ -9,15 +8,17 @@ import { toast } from "react-toastify";
 
 const FormCategory = () => {
   const token = useEcomStore((state) => state.token);
+  const categories = useEcomStore((state) => state.categories);
+  const getCategory = useEcomStore((state) => state.getCategory);
+
   const [name, setName] = useState("");
-  // const [categories, setCategories] = useState([]);
-const categories = useEcomStore((state)=>state.categories)
-const getCategory = useEcomStore((state)=>state.getCategory)
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    getCategory(token);
-  }, []);
-
-
+    if (token) {
+      getCategory(token);
+    }
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const getCategory = useEcomStore((state)=>state.getCategory)
       return toast.warning("Please fill in the category name");
     }
 
+    setIsLoading(true);
     try {
       const res = await createCategory(token, { name });
       toast.success(`Category "${res.data.name}" added successfully!`);
@@ -33,16 +35,23 @@ const getCategory = useEcomStore((state)=>state.getCategory)
     } catch (err) {
       console.error(err);
       toast.error("Failed to add category");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRemove = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (!confirmDelete) return;
+
     try {
       const res = await removeCategory(token, id);
       toast.success(`Deleted category "${res.data.name}"`);
       getCategory(token);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Failed to delete category");
     }
   };
@@ -64,9 +73,14 @@ const getCategory = useEcomStore((state)=>state.getCategory)
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          disabled={isLoading}
+          className={`px-4 py-2 rounded-lg text-white transition ${
+            isLoading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Add
+          {isLoading ? "Adding..." : "Add"}
         </button>
       </form>
 
@@ -79,9 +93,9 @@ const getCategory = useEcomStore((state)=>state.getCategory)
           {categories.length === 0 ? (
             <p className="text-gray-500">No categories available.</p>
           ) : (
-            categories.map((item, index) => (
+            categories.map((item) => (
               <li
-                key={index}
+                key={item.id}
                 className="flex justify-between items-center bg-gray-100 rounded-lg px-4 py-2 shadow-sm"
               >
                 <span className="text-gray-800">{item.name}</span>

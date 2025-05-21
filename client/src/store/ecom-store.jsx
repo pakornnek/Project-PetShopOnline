@@ -8,7 +8,7 @@ const ecomStore = (set) => ({
   user: null,
   token: null,
   categories: [],
-  Products: [],
+  products: [],
   actionLogin: async (form) => {
     const res = await axios.post("http://localhost:5005/api/login", form);
     //    console.log(res.data.token)
@@ -30,7 +30,7 @@ const ecomStore = (set) => ({
   getProduct: async (token, count) => {
     try {
       const res = await listProduct(token, count);
-      set({ categories: res.data });
+      set({ products: res.data });
     } catch (err) {
       console.log(err);
     }
