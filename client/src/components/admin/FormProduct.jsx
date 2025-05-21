@@ -3,12 +3,13 @@ import useEcomStore from "../../store/ecom-store";
 import { createProduct } from "../../api/product";
 import { toast } from "react-toastify";
 import Uploadfile from "./Uploadfile";
+import { Link } from "react-router-dom";
 
 const initialState = {
-  title: "Food Dog",
-  description: "desc",
-  price: "200",
-  quantity: "15",
+  title: "",
+  description: "",
+  price: "",
+  quantity: "",
   categoryId: "",
   images: [],
 };
@@ -20,7 +21,6 @@ const FormProduct = () => {
   const getProduct = useEcomStore((state) => state.getProduct);
   const products = useEcomStore((state) => state.products);
   const [form, setForm] = useState(initialState);
-  
 
   useEffect(() => {
     if (token) {
@@ -31,7 +31,6 @@ const FormProduct = () => {
 
   const handleonChange = (e) => {
     const { name, value, type } = e.target;
-
     setForm({
       ...form,
       [name]: type === "number" ? Number(value) : value,
@@ -46,19 +45,21 @@ const FormProduct = () => {
       await getProduct(token, 20);
       setForm(initialState);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   };
 
   return (
-    <div className="container mx-auto p-4 bg-white shadow-md">
-      <form onSubmit={handleSubmit}>
-        <h1 className="text-xl font-bold mb-4">เพิ่มข้อมูลสินค้า</h1>
+    <div className="container mx-auto p-6 bg-white shadow-lg rounded-xl">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <h1 className="text-2xl font-bold text-gray-700 mb-4">
+          🛒 เพิ่มข้อมูลสินค้า
+        </h1>
 
         <input
           type="text"
-          className="border p-2 w-full mb-2"
+          className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={form.title}
           onChange={handleonChange}
           placeholder="ชื่อสินค้า"
@@ -67,35 +68,38 @@ const FormProduct = () => {
         />
         <input
           type="text"
-          className="border p-2 w-full mb-2"
+          className="border p-2 w-full rounded-md"
           value={form.description}
           onChange={handleonChange}
           placeholder="รายละเอียดสินค้า"
           name="description"
           required
         />
-        <input
-          type="number"
-          className="border p-2 w-full mb-2"
-          value={form.price}
-          onChange={handleonChange}
-          placeholder="ราคา"
-          name="price"
-          min={0}
-          required
-        />
-        <input
-          type="number"
-          className="border p-2 w-full mb-2"
-          value={form.quantity}
-          onChange={handleonChange}
-          placeholder="จำนวนในคลัง"
-          name="quantity"
-          min={0}
-          required
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <input
+            type="number"
+            className="border p-2 w-full rounded-md"
+            value={form.price}
+            onChange={handleonChange}
+            placeholder="ราคา"
+            name="price"
+            min={0}
+            required
+          />
+          <input
+            type="number"
+            className="border p-2 w-full rounded-md"
+            value={form.quantity}
+            onChange={handleonChange}
+            placeholder="จำนวนในคลัง"
+            name="quantity"
+            min={0}
+            required
+          />
+        </div>
+
         <select
-          className="border p-2 w-full mb-4"
+          className="border p-2 w-full rounded-md"
           name="categoryId"
           onChange={handleonChange}
           required
@@ -104,58 +108,85 @@ const FormProduct = () => {
           <option value="" disabled>
             เลือกหมวดหมู่
           </option>
-          {categories.map((item, index) => (
-            <option key={index} value={item.id}>
+          {categories.map((item) => (
+            <option key={item.id} value={item.id}>
               {item.name}
             </option>
           ))}
         </select>
-        <hr />
-{/*upload file */}
-<Uploadfile form={form} setForm={setForm} />
+
+        <Uploadfile form={form} setForm={setForm} />
+
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition"
         >
-          เพิ่มสินค้า
+          ➕ เพิ่มสินค้า
         </button>
+      </form>
 
-        <hr />
-        <br />
+      {/* ตารางสินค้า */}
+      <hr className="my-6" />
+      <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        📦 รายการสินค้า
+      </h2>
 
-        <table className="table-auto w-full border">
+      <div className="overflow-auto">
+        <table className="min-w-full border text-sm">
           <thead>
-            <tr className="bg-gray-200 border">
-              <th scope="col">No.</th>
-              <th scope="col">ชื่อ</th>
-              <th scope="col">รายละเอียด</th>
-              <th scope="col">ราคา</th>
-              <th scope="col">จำนวน</th>
-              <th scope="col">ขายแล้ว</th>
-              <th scope="col">วันที่อัปเดต</th>
+            <tr className="bg-gray-100 text-gray-700 font-semibold">
+              <th className="border px-3 py-2">No.</th>
+              <th className="border px-3 py-2">รูปภาพ</th>
+              <th className="border px-3 py-2">ชื่อ</th>
+              <th className="border px-3 py-2">รายละเอียด</th>
+              <th className="border px-3 py-2">ราคา</th>
+              <th className="border px-3 py-2">จำนวน</th>
+              <th className="border px-3 py-2">ขายแล้ว</th>
+              <th className="border px-3 py-2">อัปเดต</th>
+              <th className="border px-3 py-2">การจัดการ</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((item, index) => {
-              return (
-                <tr key={item.id || index}>
-                  <th scope="row">{index + 1}</th>
-                  <td>{item.title}</td>
-                  <td>{item.description}</td>
-                  <td>{item.price}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.sold}</td>
-                  <td>{new Date(item.updatedAt).toLocaleDateString()}</td>
-                  <td>
-                    <p>แกไข้</p>
-                    <p>ลบ</p>
-                  </td>
-                </tr>
-              );
-            })}
+            {products.map((item, index) => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                <td className="border px-3 py-2 text-center">{index + 1}</td>
+                <td className="border px-3 py-2 text-center">
+                  {item.images.length > 0 ? (
+                    <img
+                      src={item.images[0].url}
+                      alt={item.title}
+                      className="w-16 h-16 object-cover rounded-md shadow"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                      No Image
+                    </div>
+                  )}
+                </td>
+                <td className="border px-3 py-2">{item.title}</td>
+                <td className="border px-3 py-2">{item.description}</td>
+                <td className="border px-3 py-2 text-right">{item.price}</td>
+                <td className="border px-3 py-2 text-right">{item.quantity}</td>
+                <td className="border px-3 py-2 text-right">{item.sold}</td>
+                <td className="border px-3 py-2 text-center">
+                  {new Date(item.updatedAt).toLocaleDateString()}
+                </td>
+                <td className="border px-3 py-2 text-center space-y-1">
+                  <Link
+                    to={`/admin/product/${item.id}`}
+                    className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md shadow"
+                  >
+                    แก้ไข
+                  </Link>
+                  <button className="block bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md shadow mt-1">
+                    ลบ
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
-      </form>
+      </div>
     </div>
   );
 };

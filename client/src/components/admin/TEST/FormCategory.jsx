@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { createCategory, removeCategory } from "../../api/category";
+import {
+  createCategory,
+  removeCategory,
+} from "../../api/category";
 import useEcomStore from "../../store/ecom-store";
 import { toast } from "react-toastify";
 
@@ -12,12 +15,16 @@ const FormCategory = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (token) getCategory(token);
+    if (token) {
+      getCategory(token);
+    }
   }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return toast.warning("Please fill in the category name");
+    if (!name.trim()) {
+      return toast.warning("Please fill in the category name");
+    }
 
     setIsLoading(true);
     try {
@@ -50,29 +57,26 @@ const FormCategory = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-2xl">
+      <h1 className="text-2xl font-semibold text-gray-800 mb-6">
         📁 Category Management
       </h1>
 
-      {/* Form Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-3 mb-8"
-      >
+      {/* ฟอร์มเพิ่มหมวดหมู่ */}
+      <form onSubmit={handleSubmit} className="flex gap-3 mb-6">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           type="text"
-          placeholder="Enter new category"
+          placeholder="Enter category name"
         />
         <button
           type="submit"
           disabled={isLoading}
-          className={`px-5 py-2 rounded-lg text-white font-semibold transition duration-200 ${
+          className={`px-4 py-2 rounded-lg text-white transition ${
             isLoading
-              ? "bg-blue-300 cursor-not-allowed"
+              ? "bg-blue-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
@@ -80,24 +84,24 @@ const FormCategory = () => {
         </button>
       </form>
 
-      {/* Category List */}
+      {/* รายการหมวดหมู่ */}
       <div>
-        <h2 className="text-xl font-medium text-gray-700 mb-3">
-          🗂 Existing Categories
+        <h2 className="text-lg font-medium text-gray-700 mb-2">
+          Existing Categories
         </h2>
         <ul className="space-y-3">
           {categories.length === 0 ? (
-            <p className="text-gray-500 italic">No categories available.</p>
+            <p className="text-gray-500">No categories available.</p>
           ) : (
             categories.map((item) => (
               <li
                 key={item.id}
-                className="flex justify-between items-center bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 hover:shadow transition"
+                className="flex justify-between items-center bg-gray-100 rounded-lg px-4 py-2 shadow-sm"
               >
-                <span className="text-gray-800 font-medium">{item.name}</span>
+                <span className="text-gray-800">{item.name}</span>
                 <button
                   onClick={() => handleRemove(item.id)}
-                  className="bg-red-500 text-white px-4 py-1.5 rounded-md hover:bg-red-600 transition"
+                  className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
                 >
                   Delete
                 </button>
