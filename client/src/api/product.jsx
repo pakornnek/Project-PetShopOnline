@@ -14,8 +14,17 @@ export const listProduct = async (token, count = 20) => {
     },
   });
 };
+
 export const readProduct = async (token, id) => {
   return axios.get(`http://localhost:5005/api/product/`+id, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteProduct = async (token, id) => {
+  return axios.delete(`http://localhost:5005/api/product/`+id, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

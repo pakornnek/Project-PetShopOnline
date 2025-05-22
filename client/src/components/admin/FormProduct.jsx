@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import useEcomStore from "../../store/ecom-store";
-import { createProduct } from "../../api/product";
+import { createProduct, deleteProduct } from "../../api/product";
 import { toast } from "react-toastify";
 import Uploadfile from "./Uploadfile";
 import { Link } from "react-router-dom";
+import { Pencil } from "lucide-react";
+import { Trash } from "lucide-react";
 
 const initialState = {
   title: "",
   description: "",
-  price: "",
-  quantity: "",
+  price: 0,
+  quantity: 0,
   categoryId: "",
   images: [],
 };
@@ -20,7 +22,14 @@ const FormProduct = () => {
   const categories = useEcomStore((state) => state.categories);
   const getProduct = useEcomStore((state) => state.getProduct);
   const products = useEcomStore((state) => state.products);
-  const [form, setForm] = useState(initialState);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    price: 0,
+    quantity: 0,
+    categoryId: "",
+    images: [],
+  });
 
   useEffect(() => {
     if (token) {
@@ -44,11 +53,26 @@ const FormProduct = () => {
       toast.success(`เพิ่มข้อมูล ${res.data.title} สำเร็จ`);
       await getProduct(token, 20);
       setForm(initialState);
+      getProduct(token);
     } catch (err) {
       console.error(err);
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
     }
   };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("คุณแน่ใจหรือไม่จะลบสินค้านี้")) {
+      try {
+        const res = await deleteProduct(token, id);
+        console.log(res);
+        toast.success("ลบสินค้าสำเร็จ");
+        await getProduct(token, 20);
+      } catch (err) {
+        console.log(err);
+        toast.error("เกิดข้อผิดพลาดในการลบสินค้า");
+      }
+    }
+  }; //
 
   return (
     <div className="container mx-auto p-6 bg-white shadow-lg rounded-xl">
@@ -119,7 +143,8 @@ const FormProduct = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition"
+          className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 
+  text-white font-semibold py-2 px-6 rounded-lg transition duration-300 transform hover:scale-105"
         >
           ➕ เพิ่มสินค้า
         </button>
@@ -131,10 +156,10 @@ const FormProduct = () => {
         📦 รายการสินค้า
       </h2>
 
-      <div className="overflow-auto">
+      <div className="overflow-auto container mx-auto p-6 bg-gray-50 shadow-xl rounded-2xl font-sans">
         <table className="min-w-full border text-sm">
           <thead>
-            <tr className="bg-gray-100 text-gray-700 font-semibold">
+            <tr className="bg-gradient-to-r from-gray-200 to-gray-100 text-gray-800 text-sm uppercase tracking-wider">
               <th className="border px-3 py-2">No.</th>
               <th className="border px-3 py-2">รูปภาพ</th>
               <th className="border px-3 py-2">ชื่อ</th>
@@ -146,6 +171,7 @@ const FormProduct = () => {
               <th className="border px-3 py-2">การจัดการ</th>
             </tr>
           </thead>
+
           <tbody>
             {products.map((item, index) => (
               <tr key={item.id} className="hover:bg-gray-50">
@@ -171,14 +197,22 @@ const FormProduct = () => {
                 <td className="border px-3 py-2 text-center">
                   {new Date(item.updatedAt).toLocaleDateString()}
                 </td>
-                <td className="border px-3 py-2 text-center space-y-1">
+                <td className="flex gap-2">
                   <Link
                     to={`/admin/product/${item.id}`}
-                    className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md shadow"
+                    className="flex items-center gap-1 bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-lg 
+  shadow transition duration-300 hover:scale-105"
                   >
+                    <Pencil className="w-4 h-4" />
                     แก้ไข
                   </Link>
-                  <button className="block bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md shadow mt-1">
+
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg 
+  shadow transition duration-300 hover:scale-105"
+                  >
+                    <Trash className="w-4 h-4" />
                     ลบ
                   </button>
                 </td>
