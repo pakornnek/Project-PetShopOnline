@@ -25,18 +25,18 @@ const FormProduct = () => {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    price: 0,
-    quantity: 0,
+    price: "",
+    quantity: "",
     categoryId: "",
     images: [],
   });
 
   useEffect(() => {
-    if (token) {
-      getCategory(token);
-      getProduct(token, 100);
-    }
-  }, [token]);
+  
+      getCategory();
+      getProduct(100);
+    
+  }, []);
 
   const handleonChange = (e) => {
     const { name, value, type } = e.target;
@@ -53,7 +53,7 @@ const FormProduct = () => {
       toast.success(`เพิ่มข้อมูล ${res.data.title} สำเร็จ`);
       await getProduct(token, 20);
       setForm(initialState);
-      getProduct(token);
+      getProduct();
     } catch (err) {
       console.error(err);
       toast.error("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
@@ -66,7 +66,7 @@ const FormProduct = () => {
         const res = await deleteProduct(token, id);
         console.log(res);
         toast.success("ลบสินค้าสำเร็จ");
-        await getProduct(token, 20);
+        await getProduct();
       } catch (err) {
         console.log(err);
         toast.error("เกิดข้อผิดพลาดในการลบสินค้า");
