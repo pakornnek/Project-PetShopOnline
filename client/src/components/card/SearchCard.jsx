@@ -54,14 +54,14 @@ const SearchCard = () => {
     }
   };
 
-  console.log(categorySelected);
+
   //Search by Price
 
   useEffect(() => {
     actionSearchFilters({price})
   }, [ok]);
   const handlePrice = (value) => {
-    console.log(value);
+    console.log(value)
     setprice(value)
 
 
