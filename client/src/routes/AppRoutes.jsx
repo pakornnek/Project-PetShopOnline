@@ -1,5 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+// Public Pages
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
@@ -7,17 +9,26 @@ import History from "../pages/History";
 import Checkout from "../pages/Checkout";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+
+// Layouts
 import Layout from "../layouts/Layout";
 import LayoutAdmin from "../layouts/LayoutAdmin";
+import LayoutUser from "../layouts/LayoutUser";
+
+// Admin Pages
 import Dashbord from "../pages/admin/Dashbord";
 import Category from "../pages/admin/Category";
 import Product from "../pages/admin/Product";
-import Manage from "../pages/admin/Manage";
-import LayoutUser from "../layouts/LayoutUser";
-import HomeUser from "../pages/user/HomeUser";
-import ProtectRouteAdmin from "./ProtecRouteAdmin";
-import ProtectRouteUser from "./ProtectRouteUser"; 
 import EditProduct from "../pages/admin/EditProduct";
+import Manage from "../pages/admin/Manage";
+
+// User Pages
+import HomeUser from "../pages/user/HomeUser";
+import Payment from "../pages/user/Payment";
+
+// Protected Routes
+import ProtectRouteAdmin from "./ProtecRouteAdmin";
+import ProtectRouteUser from "./ProtectRouteUser";
 
 const router = createBrowserRouter([
   {
@@ -33,39 +44,29 @@ const router = createBrowserRouter([
       { path: "register", element: <Register /> },
     ],
   },
-
-
   {
-    path:'/admin',
-    element:<ProtectRouteAdmin element={<LayoutAdmin/>} />,
-    children:[
-      {index:true,element: <Dashbord/>},
-      {path:'category',element:<Category/>},
-      {path:'product',element:<Product/>},
-      {path:'product/:id',element:<EditProduct/>},
-      {path:'manage',element:<Manage/>},
-    ]
+    path: "/admin",
+    element: <ProtectRouteAdmin element={<LayoutAdmin />} />,
+    children: [
+      { index: true, element: <Dashbord /> },
+      { path: "category", element: <Category /> },
+      { path: "product", element: <Product /> },
+      { path: "product/:id", element: <EditProduct /> },
+      { path: "manage", element: <Manage /> },
+    ],
   },
-
-
   {
-    path:'/user',
-    // element:<LayoutUser/>,
-    element:<ProtectRouteUser element={<LayoutUser/>} />,
-    children:[
-      {index:true,element: <HomeUser/>},
-   
-    ]
-  }
-
+    path: "/user",
+    element: <ProtectRouteUser element={<LayoutUser />} />,
+    children: [
+      { index: true, element: <HomeUser /> },
+      { path: "payment", element: <Payment /> },
+    ],
+  },
 ]);
 
 const AppRoutes = () => {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default AppRoutes;

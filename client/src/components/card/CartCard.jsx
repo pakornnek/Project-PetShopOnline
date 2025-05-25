@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash2, Minus, Plus } from "lucide-react";
 import useEcomStore from "../../store/ecom-store";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
 const CartCard = () => {
   const carts = useEcomStore((state) => state.carts);
   const actionUpdateQuantity = useEcomStore(
@@ -69,7 +69,7 @@ const CartCard = () => {
               </div>
 
               {/*Right*/}
-              <div className="font-bold text-blue-500"> {item.price}</div>
+              <div className="font-bold text-blue-500"> {item.price * item.count}</div>
             </div>
           </div>
         ))}
@@ -80,7 +80,7 @@ const CartCard = () => {
         </div>
         {/* Button*/}
 
-        <Link to={'/cart'}>
+        <Link to={"/cart"}>
           <button className="mt-4 bg-green-500 hover:bg-green-700 text-white w-full py-2 rounded-md">
             ดำเนินการชำระเงิน
           </button>
