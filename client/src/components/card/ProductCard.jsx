@@ -2,10 +2,20 @@ import React from "react";
 import { ShoppingCart } from "lucide-react";
 import useEcomStore from "../../store/ecom-store";
 import { numberFormat } from "../../utils/number";
+import { motion } from "framer-motion";
 const ProductCard = ({ item }) => {
   const actionAddtoCart = useEcomStore((state) => state.actionAddtoCart);
 
   return (
+    <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+                duration: 0.4,
+                scale: { type: "spring", visualDuration: 0.4, bounce: 0.5 },
+            }}
+            
+        >
     <div className="border rounded-md shadow-md p-2 w-48">
       <div>
         {item.images && item.images.length > 0 ? (
@@ -38,6 +48,7 @@ const ProductCard = ({ item }) => {
         </button>
       </div>
     </div>
+    </motion.div>
   );
 };
 

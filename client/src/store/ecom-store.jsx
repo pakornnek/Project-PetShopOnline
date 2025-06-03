@@ -10,6 +10,16 @@ const ecomStore = (set, get) => ({
   categories: [],
   products: [],
   carts: [],
+
+  logout:()=>{
+    set({
+      user: null,
+      token: null,
+      categories: [],
+      products: [],
+      carts: [],
+    })
+  },
   actionAddtoCart: (product) => {
     const carts = get().carts;
     const updateCart = [...carts, { ...product, count: 1 }];
@@ -41,7 +51,6 @@ const ecomStore = (set, get) => ({
       return total + item.price * item.count
     },0)
   },
-
 
   actionLogin: async (form) => {
     const res = await axios.post("http://localhost:5005/api/login", form);
@@ -76,6 +85,10 @@ const ecomStore = (set, get) => ({
       console.log(err);
     }
   },
+
+  clearCart: ()=>{
+    set({set:[]})
+  }
 });
 
 const usePersist = {

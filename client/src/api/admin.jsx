@@ -21,3 +21,25 @@ export const changeOrderStatus = async (token, orderId, orderStatus) => {
     }
   );
 };
+
+export const getListAllUsers = async (token) => {
+  return axios.get("http://localhost:5005/api/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export const changeUserStatus = async (token,value) => {
+  return axios.post("http://localhost:5005/api/change-status",value, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export const changeUserRole = async (token,value) => {
+  return axios.post("http://localhost:5005/api/change-role",value, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

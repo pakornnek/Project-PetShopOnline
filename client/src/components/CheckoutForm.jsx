@@ -7,15 +7,19 @@ import {
 import "../stripe.css";
 import { saveOrder } from "../api/user";
 import useEcomStore from "../store/ecom-store";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckoutForm() {
+  const token = useEcomStore((state) => state.token);
+  const clearCart = useEcomStore((state) => state.clearCart);
+  const nivagate = useNavigate();
+
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const token = useEcomStore((state) => state.token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +36,27 @@ export default function CheckoutForm() {
       redirect: "if_required",
     });
 
+    console.log("payload", payload);
     if (payload.error) {
-      setMessage(error.message);
-    } else {
-      //create order
+      setMessage(payload.error.message);
+      console.log("error");
+      toast.error(payload.error.message);
+    } else if (payload.paymentIntent.status === "succeeded") {
+      console.log("Ready or SaveOrder");
+      //   //create order
       saveOrder(token, payload)
-      .then((res)=>{
-        console.log(res)
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
+        .then((res) => {
+          console.log(res);
+          clearCart()
+          toast.success("ชำระเงินเสร็จสิ้น");
+          nivagate("/user/history");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log("Somthing wrong");
+      toast.warning("ชำระเงินไม่เสร็จสิ้น");
     }
 
     setIsLoading(false);
