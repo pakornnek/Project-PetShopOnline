@@ -3,7 +3,7 @@ import { listUserCart, saveAddress } from "../../api/user";
 import useEcomeStore from "../../store/ecom-store";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { numberFormat } from "../../utils/number";
 const SummaryCard = () => {
   const token = useEcomeStore((state) => state.token);
   const [products, setProducts] = useState([]);
@@ -86,12 +86,12 @@ const SummaryCard = () => {
                   <div>
                     <p className="font-bold">{item.product.title}</p>
                     <p className="text-sm">
-                      {item.count} x {item.product.price.toFixed(2)}
+                      จำนวน : {item.count} x {numberFormat(item.product.price)}
                     </p>
                   </div>
                   <div>
                     <p className="text-red-500 font-bold">
-                      {(item.count * item.product.price).toFixed(2)}
+                      {numberFormat(item.count * item.product.price)}
                     </p>
                   </div>
                 </div>
@@ -113,7 +113,7 @@ const SummaryCard = () => {
               <div className="flex justify-between">
                 <p className="font-bold">ยอดรวมสุทธิ:</p>
                 <p className="text-red-500 font-bold text-lg">
-                  {cartTotal.toFixed(2)}
+                  {numberFormat(cartTotal)}
                 </p>
               </div>
               <hr />

@@ -27,4 +27,27 @@ export const saveAddress = async (token, address) => {
     }
   );
 };
+export const saveOrder = async (token, payload) => {
+  return axios.post(
+    "http://localhost:5005/api/user/order",
+   payload ,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const getOrders = async (token) => {
+  return axios.get(
+    "http://localhost:5005/api/user/order",
+   
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
 

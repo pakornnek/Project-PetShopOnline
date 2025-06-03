@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { authCheck } = require("../middlewares/authCheck");
 
-const{ getOrderAdmin,changeOrderStatus} = require('../controllers/admin')
+const{ getOrdersAdmin,changeOrderStatus} = require('../controllers/admin')
 router.put("/admin/order-status", authCheck,changeOrderStatus);
-router.get("/admin/orders",authCheck,getOrderAdmin);
+router.get("/admin/orders",authCheck,getOrdersAdmin);
 
 module.exports = router;

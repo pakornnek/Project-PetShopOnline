@@ -6,12 +6,13 @@ import Uploadfile from "./Uploadfile";
 import { Link } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
-
+import { numberFormat } from "../../utils/number";
+import { dateFormat } from "../../utils/dateformat";
 const initialState = {
   title: "",
   description: "",
-  price: 0,
-  quantity: 0,
+  price: "",
+  quantity: "",
   categoryId: "",
   images: [],
 };
@@ -191,9 +192,14 @@ const FormProduct = () => {
                 </td>
                 <td className="border px-3 py-2">{item.title}</td>
                 <td className="border px-3 py-2">{item.description}</td>
-                <td className="border px-3 py-2 text-right">{item.price}</td>
+                <td className="border px-3 py-2 text-right">
+                  {numberFormat(item.price)}
+                </td>
                 <td className="border px-3 py-2 text-right">{item.quantity}</td>
                 <td className="border px-3 py-2 text-right">{item.sold}</td>
+                <td className="border px-3 py-2 text-right">
+                  {dateFormat(item.updatedAt)}
+                </td>
                 <td className="border px-3 py-2 text-center">
                   {new Date(item.updatedAt).toLocaleDateString()}
                 </td>

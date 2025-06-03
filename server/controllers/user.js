@@ -189,6 +189,9 @@ exports.saveAddress = async (req, res) => {
 };
 exports.saveOrder = async (req, res) => {
   try {
+    // console.log(req.body)
+    // return res.send('hello BRO')
+    const { id, amount, status, currency } = req.body.paymentIntent;
     const userCart = await prisma.cart.findFirst({
       where: {
         orderedById: Number(req.user.id),
@@ -200,23 +203,7 @@ exports.saveOrder = async (req, res) => {
       return res.status(400).json({ ok: false, message: "Cart is Empty" });
     }
 
-    for (const item of userCart.products) {
-      // console.log(item);
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-        select: { quantity: true, title: true },
-      });
-
-      // console.log(item);
-      // console.log(product);
-      if (!product || item.count > product.quantity) {
-        return res.status(400).json({
-          ok: false,
-          message: `ขออภัย. สินค้า ${product?.title || "product"}หมด`,
-        });
-      }
-    }
-
+    const amountTHB = Number(amount) / 100;
     const order = await prisma.order.create({
       data: {
         products: {
@@ -230,6 +217,10 @@ exports.saveOrder = async (req, res) => {
           connect: { id: req.user.id },
         },
         cartTotal: userCart.cartTotal,
+        stripePaymentId: id,
+        amount: amountTHB,
+        status: status,
+        currency: currency,
       },
     });
 

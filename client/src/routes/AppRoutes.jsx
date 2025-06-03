@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
-import History from "../pages/History";
+import History from "../pages/user/History";
 import Checkout from "../pages/Checkout";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -21,6 +21,8 @@ import Category from "../pages/admin/Category";
 import Product from "../pages/admin/Product";
 import EditProduct from "../pages/admin/EditProduct";
 import Manage from "../pages/admin/Manage";
+import ManageOrders from "../pages/admin/ManageOrders"
+
 
 // User Pages
 import HomeUser from "../pages/user/HomeUser";
@@ -38,7 +40,6 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "shop", element: <Shop /> },
       { path: "cart", element: <Cart /> },
-      { path: "history", element: <History /> },
       { path: "checkout", element: <Checkout /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: "product", element: <Product /> },
       { path: "product/:id", element: <EditProduct /> },
       { path: "manage", element: <Manage /> },
+      { path: "orders", element: <ManageOrders/> },
     ],
   },
   {
@@ -61,6 +63,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomeUser /> },
       { path: "payment", element: <Payment /> },
+      { path: "history", element: <History /> },
     ],
   },
 ]);
